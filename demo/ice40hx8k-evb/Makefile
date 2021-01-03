@@ -4,11 +4,11 @@ DEVICE = hx8k
 
 all: $(PROJ).rpt $(PROJ).bin
 
-%.blif: %.v
-	yosys -p 'synth_ice40 -top top -blif $@' $<
+%.json: %.v
+	yosys -p 'synth_ice40 -top top -json $@' $<
 
-%.asc: $(PIN_DEF) %.blif
-	arachne-pnr -d $(subst hx,,$(subst lp,,$(DEVICE))) -o $@ -p $^ -P ct256
+%.asc: %.json $(PIN_DEV)
+	nextpnr-ice40 --hx8k --json $< --pcf $(PIN_DEF) --asc $@
 
 %.bin: %.asc
 	icepack $< $@
@@ -24,6 +24,6 @@ sudo-prog: $(PROJ).bin
 	sudo iceprogduino $<
 
 clean:
-	rm -f $(PROJ).blif $(PROJ).asc $(PROJ).bin $(PROJ).rpt
+	rm -f $(PROJ).json $(PROJ).asc $(PROJ).bin $(PROJ).rpt
 
 .PHONY: all prog clean
