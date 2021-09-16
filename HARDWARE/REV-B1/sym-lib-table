@@ -1,0 +1,3 @@
+(sym_lib_table
+ (lib (name iCE40HX8K-EVB_Rev_B1)(type Legacy)(uri ${KIPRJMOD}/iCE40HX8K-EVB_Rev_B1.lib)(options "")(descr ""))
+)
