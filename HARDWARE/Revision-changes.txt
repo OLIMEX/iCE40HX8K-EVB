@@ -1,0 +1,9 @@
+Revision changes for iCE40HX8K-EVB
+
+Hardware revision B1
+=========
+1. Component U1 changed from W25Q16BVSSIG(SOIC-8_208mil) to EN25Q16B-104HIP(SOIC-8_208mil).
+
+Hardware revision B
+========
+Initial board release.
