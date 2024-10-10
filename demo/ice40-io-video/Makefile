@@ -1,14 +1,15 @@
 PROJ = example
 PIN_DEF = ice40-io-video.pcf
 DEVICE = hx8k
+PACKAGE = ct256
 
 all: $(PROJ).rpt $(PROJ).bin
 
-%.blif: %.v
-	yosys -p 'synth_ice40 -top top -blif $@' $<
+%.blif %.json : %.v
+	yosys -p 'synth_ice40 -top top -blif $@ -json $*.json' $<
 
-%.asc: $(PIN_DEF) %.blif
-	arachne-pnr -d $(subst hx,,$(subst lp,,$(DEVICE))) -o $@ -p $^ -P ct256
+%.asc: $(PIN_DEF) %.blif %.json
+	nextpnr-ice40 --$(DEVICE) --package $(PACKAGE) --json $*.json --asc $@ --pcf $(PIN_DEF)
 
 %.bin: %.asc
 	icepack $< $@
