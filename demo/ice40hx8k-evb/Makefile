@@ -1,14 +1,15 @@
 PROJ = example
 PIN_DEF = ice40hx8k-evb.pcf
 DEVICE = hx8k
+PACKAGE = ct256
 
 all: $(PROJ).rpt $(PROJ).bin
 
-%.blif: %.v
-	yosys -p 'synth_ice40 -top top -blif $@' $<
+%.blif %.json : %.v
+	yosys -p 'synth_ice40 -top top -blif $@ -json $*.json' $<
 
-%.asc: $(PIN_DEF) %.blif
-	arachne-pnr -d $(subst hx,,$(subst lp,,$(DEVICE))) -o $@ -p $^ -P ct256
+%.asc: $(PIN_DEF) %.blif %.json
+	nextpnr-ice40 --$(DEVICE) --package $(PACKAGE) --json $*.json --asc $@ --pcf $(PIN_DEF)
 
 %.bin: %.asc
 	icepack $< $@
@@ -25,5 +26,5 @@ sudo-prog: $(PROJ).bin
 
 clean:
 	rm -f $(PROJ).blif $(PROJ).asc $(PROJ).bin $(PROJ).rpt
-
+ 
 .PHONY: all prog clean
